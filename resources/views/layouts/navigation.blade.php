@@ -39,10 +39,17 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
+<<<<<<< HEAD
+                        <form method="POST" action="{{auth()->guard('admin')->check() ? route('admin.logout') : route('logout')}}">
+                            @csrf
+
+                            <x-dropdown-link :href="auth()->guard('admin')->check() ? route('admin.logout') : route('logout')"
+=======
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
+>>>>>>> 72f09ed9cae80cc548654ae745377f4306e3dad6
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
