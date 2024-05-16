@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -25,17 +26,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        if ($request->user()->role === 'company') {
-
-            return redirect()->intended(RouteServiceProvider::COMPANY_DASHBOARD);
-
-        } elseif ($request->user()->role === 'candidate') {
-            return redirect()->intended(RouteServiceProvider::CANDIDATE_DASHBOARD);
-
+            if ($request->user()->role === 'company') {
+                return redirect()->intended(RouteServiceProvider::COMPANY_DASHBOARD)
+                    ->with(['message' => 'Login successful!', 'alert-type' => 'success']);
+            } elseif ($request->user()->role === 'candidate') {
+                return redirect()->intended(RouteServiceProvider::CANDIDATE_DASHBOARD)
+                    ->with(['message' => 'Login successful!', 'alert-type' => 'success']);
+            }
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with(['message' => $e->validator->errors()->first(), 'alert-type' => 'error']);
         }
     }
 
@@ -50,6 +56,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')
+            ->with(['message' => 'Logged out successfully!', 'alert-type' => 'success']);
     }
 }

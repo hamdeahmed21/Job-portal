@@ -1,27 +1,40 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+@extends('admin.auth.layouts.auth-master')
+@section('title')
+    Confirm Password
+@endsection
 
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
+@section('content')
+    <section class="section">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+                    <div class="login-brand">
+                        <img src="{{asset('admin/assets/img/stisla-fill.svg')}}" alt="logo" width="100" class="shadow-light rounded-circle">
+                    </div>
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
+                    <div class="card card-primary">
+                        <div class="card-header"><h4>Confirm Password</h4></div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+                        <div class="card-body">
+                            <p class="text-muted">This is a secure area of the application. Please confirm your password before continuing.</p>
+                            <form method="POST" action="{{ route('password.confirm') }}">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input id="email" type="password" class="form-control {{$errors->has('password') ? 'is-invalid' : ''}}" name="password" required autocomplete="current-password" />
+                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                                        Confirm Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </section>
+@endsection
